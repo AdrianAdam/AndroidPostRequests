@@ -1,6 +1,5 @@
 package com.example.adrianadam.aplicatieab4systems;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,9 +19,9 @@ import retrofit2.Response;
 
 public class Register extends AppCompatActivity {
 
-    EditText email;
-    Button signIn;
-    Button createAccount;
+    private EditText email;
+    private Button signIn;
+    private Button createAccount;
 
     private ApiService apiService;
 
@@ -62,13 +61,6 @@ public class Register extends AppCompatActivity {
     }
 
     public void createAccount(String email) {
-        final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(Register.this);
-        progressDoalog.setMax(100);
-        progressDoalog.setMessage("Loading data....");
-        progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDoalog.show();
-
         apiService.createUser(email).enqueue(new Callback<ResponseUserGet>() {
             @Override
             public void onResponse(Call<ResponseUserGet> call, Response<ResponseUserGet> response) {
@@ -86,8 +78,8 @@ public class Register extends AppCompatActivity {
 
     public void startMainActivity(ResponseUserGet responseUserGet) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("Email", responseUserGet.getResult().getEmail());
-        intent.putExtra("Token", responseUserGet.getResult().getToken());
+        intent.putExtra("email", responseUserGet.getResult().getEmail());
+        intent.putExtra("token", responseUserGet.getResult().getToken());
         startActivity(intent);
     }
 }
