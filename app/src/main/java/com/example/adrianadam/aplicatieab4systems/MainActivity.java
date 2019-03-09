@@ -30,14 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private ApiService apiService;
     private HashMap<String, String> responseData = new HashMap<>();
 
-    private String token;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        token = getIntent().getStringExtra("token");
 
         listView = findViewById(R.id.list_view);
         btnFilter = findViewById(R.id.btnFilter);
@@ -50,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         apiService = ApiUtils.getAPIService();
 
-        apiService.getAllSpots(token).enqueue(new Callback<ResponseSpotGet>() {
+        apiService.getAllSpots(getIntent().getStringExtra("token")).enqueue(new Callback<ResponseSpotGet>() {
             @Override
             public void onResponse(Call<ResponseSpotGet> call, Response<ResponseSpotGet> response) {
                 Log.i("Test", response.body().getResult().get(0).getCountry());

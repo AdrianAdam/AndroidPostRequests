@@ -1,6 +1,8 @@
 package com.example.adrianadam.aplicatieab4systems.API;
 
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseCountryGet;
+import com.example.adrianadam.aplicatieab4systems.Response.ResponseDetailsGet;
+import com.example.adrianadam.aplicatieab4systems.Response.ResponseFavourites;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseSpotGet;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseUserGet;
 
@@ -28,4 +30,19 @@ public interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("/api-spot-get-all")
     Call<ResponseSpotGet> getSpotsFiltered(@Header("token") String token, @Field("country") String country, @Field("windProbability") String windProbability);
+
+    @FormUrlEncoded
+    @Headers("Content-Type: application/json")
+    @POST("/api-spot-get-details")
+    Call<ResponseDetailsGet> getSpotDetails(@Header("token") String token, @Field("spotId") String spotId);
+
+    @FormUrlEncoded
+    @Headers("Content-Type: application/json")
+    @POST("/api-spot-favorites-remove")
+    Call<ResponseFavourites> removeFavourites(@Header("token") String token, @Field("spotId") String spotId);
+
+    @FormUrlEncoded
+    @Headers("Content-Type: application/json")
+    @POST("/api-spot-favorites-add")
+    Call<ResponseFavourites> addFavourites(@Header("token") String token, @Field("spotId") String spotId);
 }
