@@ -23,6 +23,9 @@
         <activity android:name=".MainActivity"
             android:label="Kitesurfing App">
         </activity>
+        <activity android:name=".Filter"
+            android:label="Filter">
+        </activity>
     </application>
 
 </manifest>

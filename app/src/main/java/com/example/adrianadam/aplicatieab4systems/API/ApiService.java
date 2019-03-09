@@ -1,5 +1,6 @@
 package com.example.adrianadam.aplicatieab4systems.API;
 
+import com.example.adrianadam.aplicatieab4systems.Response.ResponseCountryGet;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseSpotGet;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseUserGet;
 
@@ -21,5 +22,10 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("/api-spot-get-countries")
-    Call<ResponseSpotGet> getCountries(@Header("token") String userToken);
+    Call<ResponseCountryGet> getCountries(@Header("token") String token);
+
+    @FormUrlEncoded
+    @Headers("Content-Type: application/json")
+    @POST("/api-spot-get-all")
+    Call<ResponseSpotGet> getSpotsFiltered(@Header("token") String token, @Field("country") String country, @Field("windProbability") String windProbability);
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Filter">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_filter"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Country"
+        android:id="@+id/textC"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="80dp"
+        android:textSize="18dp"
+        android:textColor="@android:color/black"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="40dp"
+        android:layout_below="@+id/textC"
+        android:id="@+id/filterCountry"
+        android:textColorHighlight="@color/blueActionBar" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wind Probability"
+        android:textSize="18dp"
+        android:textColor="@android:color/black"
+        android:id="@+id/textWP"
+        android:layout_marginStart="8dp"
+        android:layout_below="@+id/filterCountry"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="40dp"
+        android:layout_below="@+id/textWP"
+        android:id="@+id/filterWindProbability"
+        android:textColorHighlight="@color/blueActionBar"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apply"
+        android:layout_below="@+id/filterWindProbability"
+        android:id="@+id/btnApply"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
