@@ -26,7 +26,7 @@
         android:layout_marginBottom="40dp"
         android:layout_below="@+id/textC"
         android:id="@+id/filterCountry"
-        android:textColorHighlight="@color/blueActionBar" />
+        android:backgroundTint="@color/blueActionBar"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
         android:layout_marginBottom="40dp"
         android:layout_below="@+id/textWP"
         android:id="@+id/filterWindProbability"
-        android:textColorHighlight="@color/blueActionBar"/>
+        android:backgroundTint="@color/blueActionBar"/>
 
     <Button
         android:layout_width="wrap_content"
