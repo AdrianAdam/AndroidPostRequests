@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AplicatieAB4Systems</string>
+    <string name="email">com.example.adrianadam.aplicatieab4systems.email</string>
+    <string name="token">com.example.adrianadam.aplicatieab4systems.token</string>
+    <string name="spots">com.example.adrianadam.aplicatieab4systems.spots</string>
+    <string name="countries">com.example.adrianadam.aplicatieab4systems.countries</string>
+    <string name="details">SharedPreferences</string>
 </resources>

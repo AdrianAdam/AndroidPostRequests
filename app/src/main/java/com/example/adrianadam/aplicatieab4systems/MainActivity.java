@@ -1,7 +1,10 @@
 package com.example.adrianadam.aplicatieab4systems;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,12 +24,17 @@ import com.example.adrianadam.aplicatieab4systems.Model.MainPageSpot;
 import com.example.adrianadam.aplicatieab4systems.Model.Spot;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseDetailsGet;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseSpotGet;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,6 +73,35 @@ public class MainActivity extends AppCompatActivity {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
 
+        ConnectivityManager conMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if ( conMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED
+                || conMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED ) {
+            runCodeOnline();
+        }
+        else if ( conMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
+                || conMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.DISCONNECTED) {
+            Toast.makeText(MainActivity.this, "No connection detected. Will try to use the data saved on cache", Toast.LENGTH_LONG).show();
+            runCodeOffline();
+        }
+    }
+
+    public void openFilterActivity() {
+        Intent intent = new Intent(this, Filter.class);
+        intent.putExtra("token", getIntent().getStringExtra("token"));
+        finish();
+        startActivity(intent);
+    }
+
+    public void openDetailsActivity(String spotId) {
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra("token", getIntent().getStringExtra("token"));
+        intent.putExtra("spotId", spotId);
+        finish();
+        startActivity(intent);
+    }
+
+    public void runCodeOnline() {
         if(getIntent().hasExtra("countryFilter") && getIntent().hasExtra("windProbabilityFilter")) {
             if(getIntent().getStringExtra("countryFilter").equals("") && getIntent().getStringExtra("windProbabilityFilter").equals("")) {
                 getSpotsNotFiltered();
@@ -84,19 +121,73 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openFilterActivity() {
-        Intent intent = new Intent(this, Filter.class);
-        intent.putExtra("token", getIntent().getStringExtra("token"));
-        finish();
-        startActivity(intent);
-    }
+    public void runCodeOffline() {
+        if(getIntent().hasExtra("countryFilter") && getIntent().hasExtra("windProbabilityFilter")) {
+            if(getIntent().getStringExtra("countryFilter").equals("") && getIntent().getStringExtra("windProbabilityFilter").equals("")) {
+                Gson gson = new Gson();
+                String json = mPreferences.getString("spots", "");
+                Type type = new TypeToken<ArrayList<MainPageSpot>>(){}.getType();
+                final ArrayList<MainPageSpot> spotModels = gson.fromJson(json, type);
 
-    public void openDetailsActivity(String spotId) {
-        Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("token", getIntent().getStringExtra("token"));
-        intent.putExtra("spotId", spotId);
-        finish();
-        startActivity(intent);
+                listAdapter = new ListAdapter(spotModels, getApplicationContext());
+
+                listView.setAdapter(listAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MainPageSpot pageSpot = spotModels.get(position);
+                        openDetailsActivity(pageSpot.getId());
+                    }
+                });
+            } else {
+                if(!getIntent().getStringExtra("countryFilter").equals("") && getIntent().getStringExtra("windProbabilityFilter").equals("")) {
+                    Gson gson = new Gson();
+                    String json = mPreferences.getString("spots", "");
+                    Type type = new TypeToken<ArrayList<MainPageSpot>>(){}.getType();
+                    final ArrayList<MainPageSpot> spotModels = gson.fromJson(json, type);
+                    final ArrayList<MainPageSpot> spot = new ArrayList<>();
+
+                    for(int i = 0; i < spotModels.size(); i++) {
+                        if(spotModels.get(i).getCountry().equals(getIntent().getStringExtra("countryFilter"))) {
+                            spot.add(new MainPageSpot(spotModels.get(i).getName(), spotModels.get(i).getCountry(), spotModels.get(i).getId()));
+                        }
+                    }
+
+                    listAdapter = new ListAdapter(spot, getApplicationContext());
+
+                    listView.setAdapter(listAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            MainPageSpot pageSpot = spot.get(position);
+                            openDetailsActivity(pageSpot.getId());
+                        }
+                    });
+                }
+                else if(getIntent().getStringExtra("countryFilter").equals("") && !getIntent().getStringExtra("windProbabilityFilter").equals("")) {
+                    // Details API call is not working.
+                }
+                else {
+                    // Details API call is not working.
+                }
+            }
+        } else {
+            Gson gson = new Gson();
+            String json = mPreferences.getString("spots", "");
+            Type type = new TypeToken<ArrayList<MainPageSpot>>(){}.getType();
+            final ArrayList<MainPageSpot> spotModels = gson.fromJson(json, type);
+
+            listAdapter = new ListAdapter(spotModels, getApplicationContext());
+
+            listView.setAdapter(listAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    MainPageSpot pageSpot = spotModels.get(position);
+                    openDetailsActivity(pageSpot.getId());
+                }
+            });
+        }
     }
 
     public void getSpotsFilteredByAll() {
@@ -111,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseDetailsGet> call, Response<ResponseDetailsGet> response1) {
                                 Log.i("Error", response1.message() + " " + response1.code() + " " + response.body().getResult().get(I).getId());
                                 if(response1.body().getResult().getWindProbability() == Integer.parseInt(getIntent().getStringExtra("windProbabilityFilter"))) {
-                                    responseData.put(response.body().getResult().get(I).getName(), response.body().getResult().get(I).getCountry());
+                                    spotModels.add(new MainPageSpot(response.body().getResult().get(I).getName(), response.body().getResult().get(I).getCountry(), response.body().getResult().get(I).getId()));
                                 }
                             }
 
@@ -123,21 +214,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                List<HashMap<String, String>> listItems = new ArrayList<>();
-                SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), listItems, R.layout.list_item,
-                        new String[]{"First line", "Second line"},
-                        new int[]{R.id.text_city, R.id.text_country});
+                listAdapter = new ListAdapter(spotModels, getApplicationContext());
 
-                Iterator it = responseData.entrySet().iterator();
-                while(it.hasNext()) {
-                    HashMap<String, String> resultMap = new HashMap<>();
-                    Map.Entry pair = (Map.Entry) it.next();
-                    resultMap.put("First line", pair.getKey().toString());
-                    resultMap.put("Second line", pair.getValue().toString());
-                    listItems.add(resultMap);
-                }
-
-                listView.setAdapter(adapter);
+                listView.setAdapter(listAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MainPageSpot pageSpot = spotModels.get(position);
+                        openDetailsActivity(pageSpot.getId());
+                    }
+                });
             }
 
             @Override
@@ -158,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(Call<ResponseDetailsGet> call, Response<ResponseDetailsGet> response1) {
                             Log.i("Error", response1.message() + " " + response1.code() + " " + response.body().getResult().get(I).getId());
                             if(response1.body().getResult().getWindProbability() == Integer.parseInt(getIntent().getStringExtra("windProbabilityFilter"))) {
-                                responseData.put(response.body().getResult().get(I).getName(), response.body().getResult().get(I).getCountry());
+                                spotModels.add(new MainPageSpot(response.body().getResult().get(I).getName(), response.body().getResult().get(I).getCountry(), response.body().getResult().get(I).getId()));
                             }
                         }
 
@@ -169,21 +255,16 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
 
-                List<HashMap<String, String>> listItems = new ArrayList<>();
-                SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), listItems, R.layout.list_item,
-                        new String[]{"First line", "Second line"},
-                        new int[]{R.id.text_city, R.id.text_country});
+                listAdapter = new ListAdapter(spotModels, getApplicationContext());
 
-                Iterator it = responseData.entrySet().iterator();
-                while(it.hasNext()) {
-                    HashMap<String, String> resultMap = new HashMap<>();
-                    Map.Entry pair = (Map.Entry) it.next();
-                    resultMap.put("First line", pair.getKey().toString());
-                    resultMap.put("Second line", pair.getValue().toString());
-                    listItems.add(resultMap);
-                }
-
-                listView.setAdapter(adapter);
+                listView.setAdapter(listAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MainPageSpot pageSpot = spotModels.get(position);
+                        openDetailsActivity(pageSpot.getId());
+                    }
+                });
             }
 
             @Override
@@ -229,6 +310,11 @@ public class MainActivity extends AppCompatActivity {
                 for(int i = 0; i < response.body().getResult().size(); i++) {
                     spotModels.add(new MainPageSpot(response.body().getResult().get(i).getName(), response.body().getResult().get(i).getCountry(), response.body().getResult().get(i).getId()));
                 }
+
+                Gson gson = new Gson();
+                String json = gson.toJson(spotModels);
+                mEditor.putString("spots", json);
+                mEditor.commit();
 
                 listAdapter = new ListAdapter(spotModels, getApplicationContext());
 
