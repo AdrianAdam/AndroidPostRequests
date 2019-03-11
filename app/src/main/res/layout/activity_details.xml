@@ -48,7 +48,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="916.43"
+            android:text="-80.191788"
             android:id="@+id/textLatitude"
             android:layout_marginStart="8dp"
             android:textSize="16dp"
@@ -69,7 +69,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="916.43"
+            android:text="25.761681"
             android:id="@+id/textLongitude"
             android:layout_marginStart="8dp"
             android:textSize="16dp"
@@ -117,6 +117,14 @@
             android:textSize="16dp"
             android:layout_below="@+id/textWTG"
             android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go to maps"
+            android:id="@+id/btnMaps"
+            android:layout_below="@+id/textWhenToGo"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 

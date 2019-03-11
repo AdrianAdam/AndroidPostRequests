@@ -1,6 +1,7 @@
 package com.example.adrianadam.aplicatieab4systems;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView titleDetails;
     private Button favorites;
     private Button back;
+    private Button maps;
 
     private ApiService apiService;
 
@@ -47,6 +49,7 @@ public class DetailsActivity extends AppCompatActivity {
         titleDetails = findViewById(R.id.titleDetails);
         favorites = findViewById(R.id.btnStar);
         back = findViewById(R.id.btnDetails);
+        maps = findViewById(R.id.btnMaps);
 
         apiService = ApiUtils.getAPIService();
 
@@ -55,6 +58,7 @@ public class DetailsActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseDetailsGet> call, Response<ResponseDetailsGet> response) {
                 Log.i("Response", "post submitted to API." + response.body()+" " + response.code() + " " + response.message());
                 Log.i("Test", response.body().getResult().toString());
+                titleDetails.setText(response.body().getResult().getName());
                 country.setText(response.body().getResult().getCountry());
                 latitude.setText(response.body().getResult().getLatitude() + "");
                 longitude.setText(response.body().getResult().getLongitude() + "");
@@ -117,6 +121,12 @@ public class DetailsActivity extends AppCompatActivity {
                 restartMain();
             }
         });
+        maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMaps();
+            }
+        });
     }
 
     public void restartMain() {
@@ -124,5 +134,14 @@ public class DetailsActivity extends AppCompatActivity {
         intent.putExtra("token", getIntent().getStringExtra("token"));
         finish();
         startActivity(intent);
+    }
+
+    public void goToMaps() {
+        Uri gmmIntentUri = Uri.parse("geo:" + longitude.getText().toString() + "," + latitude.getText().toString());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
     }
 }
