@@ -1,5 +1,6 @@
 package com.example.adrianadam.aplicatieab4systems;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,13 +25,14 @@ public class Filter extends AppCompatActivity {
     private EditText filterCountry;
     private EditText filterWindProbability;
     private Button btnApply;
+    private Button btnBack;
 
     private ApiService apiService;
 
     private List<String> responseData = new ArrayList<>();
 
-    public String filterCountryText;
-    public String filterWindProbabilityText;
+    private String filterCountryText = "";
+    private String filterWindProbabilityText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class Filter extends AppCompatActivity {
         filterCountry = findViewById(R.id.filterCountry);
         filterWindProbability = findViewById(R.id.filterWindProbability);
         btnApply = findViewById(R.id.btnApply);
+        btnBack = findViewById(R.id.btnFilter);
 
         apiService = ApiUtils.getAPIService();
         apiService.getCountries(getIntent().getStringExtra("token")).enqueue(new Callback<ResponseCountryGet>() {
@@ -59,6 +62,8 @@ public class Filter extends AppCompatActivity {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean checkAnswer = true;
+
                 if(filterWindProbability.getText().toString().equals("")) {
                     filterWindProbabilityText = "";
                 }
@@ -68,8 +73,8 @@ public class Filter extends AppCompatActivity {
                         int num = Integer.parseInt(filterWindProbability.getText().toString());
                         filterWindProbabilityText = filterWindProbability.getText().toString();
                     } catch (NumberFormatException e) {
-                        Log.i("Error", filterWindProbability.getText().toString() + " is not a number");
                         Toast.makeText(Filter.this, "Wind Probability must be a number or empty", Toast.LENGTH_LONG).show();
+                        checkAnswer = false;
                     }
                 }
 
@@ -82,9 +87,30 @@ public class Filter extends AppCompatActivity {
                         filterCountryText = filterCountry.getText().toString();
                     } else {
                         Toast.makeText(Filter.this, "The selected country doesn't exist in out database", Toast.LENGTH_LONG).show();
+                        checkAnswer = false;
                     }
+                }
+
+                if(checkAnswer) {
+                    Toast.makeText(Filter.this, "Filters applied succesfully", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restartMain(filterCountryText, filterWindProbabilityText);
+            }
+        });
+    }
+
+    public void restartMain(String countryFilter, String windProbabilityFilter) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("token", getIntent().getStringExtra("token"));
+        intent.putExtra("countryFilter", countryFilter);
+        intent.putExtra("windProbabilityFilter", windProbabilityFilter);
+        finish();
+        startActivity(intent);
     }
 }

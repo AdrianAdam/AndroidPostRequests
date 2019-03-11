@@ -80,6 +80,7 @@ public class Register extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("email", responseUserGet.getResult().getEmail());
         intent.putExtra("token", responseUserGet.getResult().getToken());
+        finish();
         startActivity(intent);
     }
 }

@@ -28,11 +28,6 @@ public interface ApiService {
 
     @FormUrlEncoded
     @Headers("Content-Type: application/json")
-    @POST("/api-spot-get-all")
-    Call<ResponseSpotGet> getSpotsFiltered(@Header("token") String token, @Field("country") String country, @Field("windProbability") String windProbability);
-
-    @FormUrlEncoded
-    @Headers("Content-Type: application/json")
     @POST("/api-spot-get-details")
     Call<ResponseDetailsGet> getSpotDetails(@Header("token") String token, @Field("spotId") String spotId);
 

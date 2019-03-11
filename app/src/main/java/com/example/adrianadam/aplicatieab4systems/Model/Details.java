@@ -12,13 +12,13 @@ public class Details {
     private String name;
     @SerializedName("longitude")
     @Expose
-    private float longitude;
+    private double longitude;
     @SerializedName("latitude")
     @Expose
-    private float latitude;
+    private double latitude;
     @SerializedName("windProbability")
     @Expose
-    private float windProbability;
+    private int windProbability;
     @SerializedName("country")
     @Expose
     private String country;
@@ -45,15 +45,15 @@ public class Details {
         this.name = name;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public float getWindProbability() {
+    public int getWindProbability() {
         return windProbability;
     }
 
@@ -81,15 +81,15 @@ public class Details {
         isFavorite = favorite;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setWindProbability(float windProbability) {
+    public void setWindProbability(int windProbability) {
         this.windProbability = windProbability;
     }
 
