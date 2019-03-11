@@ -1,5 +1,6 @@
 package com.example.adrianadam.aplicatieab4systems;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +12,8 @@ import com.example.adrianadam.aplicatieab4systems.API.ApiService;
 import com.example.adrianadam.aplicatieab4systems.API.ApiUtils;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseDetailsGet;
 import com.example.adrianadam.aplicatieab4systems.Response.ResponseFavourites;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,8 +53,8 @@ public class DetailsActivity extends AppCompatActivity {
         apiService.getSpotDetails(getIntent().getStringExtra("token"), getIntent().getStringExtra("spotId")).enqueue(new Callback<ResponseDetailsGet>() {
             @Override
             public void onResponse(Call<ResponseDetailsGet> call, Response<ResponseDetailsGet> response) {
-                Log.i("Test", response.body().getResult().toString());
                 Log.i("Response", "post submitted to API." + response.body()+" " + response.code() + " " + response.message());
+                Log.i("Test", response.body().getResult().toString());
                 country.setText(response.body().getResult().getCountry());
                 latitude.setText(response.body().getResult().getLatitude() + "");
                 longitude.setText(response.body().getResult().getLongitude() + "");
@@ -107,5 +110,19 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restartMain();
+            }
+        });
+    }
+
+    public void restartMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("token", getIntent().getStringExtra("token"));
+        finish();
+        startActivity(intent);
     }
 }

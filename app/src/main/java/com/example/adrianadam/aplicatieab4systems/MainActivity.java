@@ -1,6 +1,8 @@
 package com.example.adrianadam.aplicatieab4systems;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private ApiService apiService;
     private HashMap<String, String> responseData = new HashMap<>();
 
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         apiService = ApiUtils.getAPIService();
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mEditor = mPreferences.edit();
 
         if(getIntent().hasExtra("countryFilter") && getIntent().hasExtra("windProbabilityFilter")) {
             if(getIntent().getStringExtra("countryFilter").equals("") && getIntent().getStringExtra("windProbabilityFilter").equals("")) {
