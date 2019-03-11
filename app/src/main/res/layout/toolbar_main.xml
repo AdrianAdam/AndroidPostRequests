@@ -18,6 +18,7 @@
         android:layout_gravity="end"
         android:id="@+id/btnFilter"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/filter"/>
+        android:background="@drawable/filter"
+        android:backgroundTint="@android:color/white"/>
 
 </android.support.v7.widget.Toolbar>
